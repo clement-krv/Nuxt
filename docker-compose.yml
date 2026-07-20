@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: eco
+      POSTGRES_PASSWORD: eco
+      POSTGRES_DB: ecotransport
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      # Port hôte 5433 pour éviter les conflits avec un PostgreSQL déjà installé.
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eco -d ecotransport"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://eco:eco@db:5432/ecotransport
+      # 32+ character secret used to seal session cookies (nuxt-auth-utils).
+      NUXT_SESSION_PASSWORD: "change-me-super-secret-session-password-32chars"
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+
+volumes:
+  db-data:
