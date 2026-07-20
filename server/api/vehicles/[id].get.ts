@@ -1,5 +1,6 @@
 import { eq } from 'drizzle-orm'
 import { useDb, tables } from '../../utils/db'
+import { fail } from '../../utils/validate'
 
 export default defineEventHandler(async (event) => {
   const id = Number(getRouterParam(event, 'id'))
@@ -10,6 +11,6 @@ export default defineEventHandler(async (event) => {
     with: { seller: { columns: { id: true, name: true, avatar: true } } },
   })
 
-  if (!vehicle) throw createError({ statusCode: 404, statusMessage: 'Annonce introuvable.' })
+  if (!vehicle) throw fail(404, 'Annonce introuvable.')
   return vehicle
 })

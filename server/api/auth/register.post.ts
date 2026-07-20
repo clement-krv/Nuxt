@@ -1,20 +1,21 @@
 import { z } from 'zod'
 import { eq } from 'drizzle-orm'
 import { useDb, tables } from '../../utils/db'
+import { validateBody, fail } from '../../utils/validate'
 
 const bodySchema = z.object({
-  name: z.string().min(2, 'Nom trop court'),
-  email: z.string().email('Email invalide'),
-  password: z.string().min(6, 'Mot de passe : 6 caractères minimum'),
+  name: z.string({ required_error: 'Le nom est requis' }).trim().min(2, 'Le nom doit contenir au moins 2 caractères'),
+  email: z.string({ required_error: 'L\'email est requis' }).trim().email('Adresse email invalide'),
+  password: z.string({ required_error: 'Le mot de passe est requis' }).min(6, 'Le mot de passe doit contenir au moins 6 caractères'),
 })
 
 export default defineEventHandler(async (event) => {
-  const { name, email, password } = await readValidatedBody(event, bodySchema.parse)
+  const { name, email, password } = await validateBody(event, bodySchema)
   const db = useDb()
 
   const existing = await db.select().from(tables.users).where(eq(tables.users.email, email)).limit(1)
   if (existing.length) {
-    throw createError({ statusCode: 409, statusMessage: 'Un compte existe déjà avec cet email.' })
+    throw fail(409, 'Un compte existe déjà avec cet email.')
   }
 
   const passwordHash = await hashPassword(password)

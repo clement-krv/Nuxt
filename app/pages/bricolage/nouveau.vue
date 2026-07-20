@@ -22,7 +22,7 @@ async function onSubmit() {
     toast.add({ title: 'Tutoriel publié !', color: 'success', icon: 'i-lucide-check' })
     await navigateTo(`/bricolage/${res.id}`)
   } catch (e: any) {
-    toast.add({ title: e?.data?.statusMessage || 'Erreur', color: 'error' })
+    toast.add({ title: 'Publication impossible', description: errorMessage(e), color: 'error', icon: 'i-lucide-alert-circle' })
   } finally {
     loading.value = false
   }

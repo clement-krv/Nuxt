@@ -18,7 +18,7 @@ async function sendComment() {
     comment.value = ''
     await refresh()
   } catch (e: any) {
-    toast.add({ title: e?.data?.statusMessage || 'Erreur', color: 'error' })
+    toast.add({ title: 'Commentaire impossible', description: errorMessage(e), color: 'error', icon: 'i-lucide-alert-circle' })
   } finally {
     sending.value = false
   }

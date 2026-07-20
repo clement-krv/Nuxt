@@ -21,7 +21,7 @@ async function onSubmit() {
     toast.add({ title: 'Trajet publié !', color: 'success', icon: 'i-lucide-check' })
     await navigateTo(`/covoiturage/${res.id}`)
   } catch (e: any) {
-    toast.add({ title: e?.data?.statusMessage || 'Erreur de publication', color: 'error' })
+    toast.add({ title: 'Publication impossible', description: errorMessage(e), color: 'error', icon: 'i-lucide-alert-circle' })
   } finally {
     loading.value = false
   }

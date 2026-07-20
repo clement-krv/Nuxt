@@ -14,7 +14,7 @@ async function onSubmit() {
     toast.add({ title: 'Compte créé 🎉', color: 'success', icon: 'i-lucide-check' })
     await navigateTo('/mon-espace')
   } catch (e: any) {
-    error.value = e?.data?.statusMessage || e?.data?.message || 'Inscription impossible.'
+    error.value = errorMessage(e, 'Inscription impossible.')
   } finally {
     loading.value = false
   }

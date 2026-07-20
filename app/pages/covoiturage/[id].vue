@@ -22,7 +22,7 @@ async function book() {
     toast.add({ title: 'Réservation confirmée ! 🎉', color: 'success', icon: 'i-lucide-check' })
     await refresh()
   } catch (e: any) {
-    toast.add({ title: e?.data?.statusMessage || 'Réservation impossible', color: 'error' })
+    toast.add({ title: 'Réservation impossible', description: errorMessage(e), color: 'error', icon: 'i-lucide-alert-circle' })
   } finally {
     booking.value = false
   }

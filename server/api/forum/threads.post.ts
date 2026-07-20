@@ -1,16 +1,17 @@
 import { z } from 'zod'
 import { useDb, tables } from '../../utils/db'
 import { requireUserId } from '../../utils/auth'
+import { validateBody } from '../../utils/validate'
 
 const bodySchema = z.object({
-  categoryId: z.number().int(),
-  title: z.string().min(4, 'Titre trop court'),
-  content: z.string().min(4, 'Message trop court'),
+  categoryId: z.number({ required_error: 'Veuillez choisir une catégorie', invalid_type_error: 'Veuillez choisir une catégorie' }).int('Catégorie invalide'),
+  title: z.string({ required_error: 'Le titre est requis' }).trim().min(4, 'Le titre doit contenir au moins 4 caractères'),
+  content: z.string({ required_error: 'Le message est requis' }).trim().min(4, 'Le message doit contenir au moins 4 caractères'),
 })
 
 export default defineEventHandler(async (event) => {
   const userId = await requireUserId(event)
-  const { categoryId, title, content } = await readValidatedBody(event, bodySchema.parse)
+  const { categoryId, title, content } = await validateBody(event, bodySchema)
   const db = useDb()
 
   const [thread] = await db

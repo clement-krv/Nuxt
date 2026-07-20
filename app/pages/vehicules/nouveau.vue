@@ -24,7 +24,7 @@ async function onSubmit() {
     toast.add({ title: 'Annonce publiée !', color: 'success', icon: 'i-lucide-check' })
     await navigateTo(`/vehicules/${res.id}`)
   } catch (e: any) {
-    toast.add({ title: e?.data?.statusMessage || 'Erreur', color: 'error' })
+    toast.add({ title: 'Publication impossible', description: errorMessage(e), color: 'error', icon: 'i-lucide-alert-circle' })
   } finally {
     loading.value = false
   }

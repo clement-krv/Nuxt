@@ -1,5 +1,6 @@
 import { eq, asc } from 'drizzle-orm'
 import { useDb, tables } from '../../../utils/db'
+import { fail } from '../../../utils/validate'
 
 export default defineEventHandler(async (event) => {
   const id = Number(getRouterParam(event, 'id'))
@@ -18,7 +19,7 @@ export default defineEventHandler(async (event) => {
   })
 
   if (!thread) {
-    throw createError({ statusCode: 404, statusMessage: 'Discussion introuvable.' })
+    throw fail(404, 'Discussion introuvable.')
   }
   return thread
 })

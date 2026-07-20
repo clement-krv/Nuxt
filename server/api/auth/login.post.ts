@@ -1,24 +1,25 @@
 import { z } from 'zod'
 import { eq } from 'drizzle-orm'
 import { useDb, tables } from '../../utils/db'
+import { validateBody, fail } from '../../utils/validate'
 
 const bodySchema = z.object({
-  email: z.string().email('Email invalide'),
-  password: z.string().min(1, 'Mot de passe requis'),
+  email: z.string({ required_error: 'L\'email est requis' }).trim().email('Adresse email invalide'),
+  password: z.string({ required_error: 'Le mot de passe est requis' }).min(1, 'Le mot de passe est requis'),
 })
 
 export default defineEventHandler(async (event) => {
-  const { email, password } = await readValidatedBody(event, bodySchema.parse)
+  const { email, password } = await validateBody(event, bodySchema)
   const db = useDb()
 
   const [user] = await db.select().from(tables.users).where(eq(tables.users.email, email)).limit(1)
   if (!user) {
-    throw createError({ statusCode: 401, statusMessage: 'Identifiants incorrects.' })
+    throw fail(401, 'Identifiants incorrects.')
   }
 
   const valid = await verifyPassword(user.passwordHash, password)
   if (!valid) {
-    throw createError({ statusCode: 401, statusMessage: 'Identifiants incorrects.' })
+    throw fail(401, 'Identifiants incorrects.')
   }
 
   await setUserSession(event, {

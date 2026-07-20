@@ -15,7 +15,7 @@ async function onSubmit() {
     toast.add({ title: 'Bienvenue !', color: 'success', icon: 'i-lucide-check' })
     await navigateTo((route.query.redirect as string) || '/mon-espace')
   } catch (e: any) {
-    error.value = e?.data?.statusMessage || 'Connexion impossible.'
+    error.value = errorMessage(e, 'Connexion impossible.')
   } finally {
     loading.value = false
   }

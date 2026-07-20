@@ -28,7 +28,7 @@ async function onSubmit() {
     await navigateTo('/billets')
     return res
   } catch (e: any) {
-    toast.add({ title: e?.data?.statusMessage || 'Erreur', color: 'error' })
+    toast.add({ title: 'Mise en vente impossible', description: errorMessage(e), color: 'error', icon: 'i-lucide-alert-circle' })
   } finally {
     loading.value = false
   }

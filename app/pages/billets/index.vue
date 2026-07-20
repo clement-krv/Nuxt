@@ -21,7 +21,7 @@ async function buy(t: any) {
     toast.add({ title: 'Billet acheté ! Contactez le vendeur.', color: 'success', icon: 'i-lucide-check' })
     await refresh()
   } catch (e: any) {
-    toast.add({ title: e?.data?.statusMessage || 'Achat impossible', color: 'error' })
+    toast.add({ title: 'Achat impossible', description: errorMessage(e), color: 'error', icon: 'i-lucide-alert-circle' })
   } finally {
     buying.value = null
   }

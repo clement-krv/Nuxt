@@ -25,9 +25,6 @@ function openNew() {
 }
 
 async function createThread() {
-  if (!form.categoryId || form.title.length < 4 || form.content.length < 4) {
-    return toast.add({ title: 'Merci de remplir tous les champs.', color: 'warning' })
-  }
   submitting.value = true
   try {
     const res = await $fetch('/api/forum/threads', { method: 'POST', body: { ...form } })
@@ -36,7 +33,7 @@ async function createThread() {
     form.content = ''
     await navigateTo(`/forum/${res.id}`)
   } catch (e: any) {
-    toast.add({ title: e?.data?.statusMessage || 'Erreur', color: 'error' })
+    toast.add({ title: 'Publication impossible', description: errorMessage(e), color: 'error', icon: 'i-lucide-alert-circle' })
   } finally {
     submitting.value = false
   }
